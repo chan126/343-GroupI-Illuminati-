@@ -3,15 +3,17 @@ import java.util.ArrayList;
 
 public class IlluminatiCard extends Card
 {
-	ArrayList<GroupCard> neighbors;
+	ArrayList<GroupCard> subjects;
 	
 	public IlluminatiCard(String name, String description)
 	{
 		this.name = name;
 		this.description = description;
-		neighbors = new ArrayList<GroupCard>();
+		subjects = new ArrayList<GroupCard>();
 	}
 	
-	
-	
+	public void addSubject(GroupCard subject)
+	{
+		subjects.add(subject);
+	}
 }
