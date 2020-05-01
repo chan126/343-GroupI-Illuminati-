@@ -14,6 +14,14 @@ public class IlluminatiCard extends Card
 	
 	public void addSubject(GroupCard subject)
 	{
-		subjects.add(subject);
+		if(subjects.size() < 4)
+			subjects.add(subject);
+		else
+			System.out.println("ERROR: You already have 4 subjects under your Illuminati group!");
+	}
+	
+	public String toString()
+	{
+		return this.name;
 	}
 }
