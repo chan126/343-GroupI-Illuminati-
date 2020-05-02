@@ -17,6 +17,14 @@ public class GroupCard extends Card
 		puppets = new ArrayList<GroupCard>();
 	}
 	
+	public GroupCard(String name)
+	{
+		this.name = name;
+		this.description = null;
+		alignments = new ArrayList<String>();
+		puppets = new ArrayList<GroupCard>();
+	}
+	
 	public void setResistance(int resistance)
 	{
 		this.resistance = resistance;
