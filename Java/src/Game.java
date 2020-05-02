@@ -1,12 +1,16 @@
 import java.util.Scanner;
 
 import cards.FaceDownCards;
+import cards.GroupCard;
 import cards.IlluminatiCard;
 import cards.IlluminatiCards;
+import cards.SpecialCard;
 import cards.UncontrolledGroups;
 
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Game
 {
@@ -71,10 +75,9 @@ public class Game
 	
 	public static void exit()
 	{
-		System.out.println("Thanks for playing!");
+		System.out.println("\nThanks for playing!");
 	}
 	
-	// one player's turn
 	public static void sequenceOfPlay(ArrayList<Player> players, Bank bank, FaceDownCards faceDown, UncontrolledGroups uncontrolled)
 	{
 //		Play goes counter-clockwise around the table.
@@ -112,6 +115,10 @@ public class Game
 		FaceDownCards faceDown = new FaceDownCards(); // contains all game cards (Group and Special)
 		UncontrolledGroups uncontrolled = new UncontrolledGroups();
 		
+// 		Remove the eight Illuminati cards from the deck; they
+//		have dark backs to make them easy to find. Place them facedown on the table. Each player draws an Illuminati card,
+//		places it face-up before him, and draws its indicated Income
+//		from the bank, placing it on the card. 
 		for(Player player : players)
 		{
 			System.out.println("\n" + player + ", please choose your Illuminati group.");
@@ -137,15 +144,49 @@ public class Game
 			System.out.println(player + ": " + player.getIlluminati());
 		}
 		
-		faceDown.shuffle(); // WRITE THIS METHOD
+		System.out.println("\nShuffling cards...");
+//		Shuffle the remaining cards (including Specials) and
+//		place them face-down in the center of the table.
+		faceDown.shuffle();
 		
-		// DRAW FOUR CARDS FROM FACEDOWN AND MOVE THEM TO UNCONTROLLED
-		// IF SPECIAL CARD IS DRAWN, RETURN TO FACEDOWN AND DRAW AGAIN
-		
-		for(Player player : players)
+//		Turn four cards face-up and place them in the center of the table.
+//		These four Groups are the original “uncontrolled Groups".
+		System.out.println("Drawing four cards from the face-down deck...");
+		for(int i = 0; i < 4; i++)
 		{
-			sequenceOfPlay(players, bank, faceDown, uncontrolled);
+			if(faceDown.getCard(i) instanceof SpecialCard)
+			{
+				faceDown.addCard(faceDown.removeCard(i));
+				i--;
+			}
+			else
+				uncontrolled.addGroup((GroupCard)faceDown.removeCard(i));
 		}
+		System.out.println("The 4 Original Uncontrolled Groups are:");
+		for(int i = 0; i < uncontrolled.getSize(); i++)
+			System.out.println(i+1 + ") " + uncontrolled.getCard(i));
+		System.out.println();
+		
+//		Each player rolls two dice; the player with the highest
+//		roll plays first.
+		Dice dice = new Dice();
+		ArrayList<Integer> rolls = new ArrayList<>();
+		for(int i = 0; i < players.size(); i++)
+		{
+			int roll = dice.roll();
+			System.out.println(players.get(i) + " rolls " + roll);
+			rolls.add(roll);
+		}
+		int indexOfMax = rolls.indexOf(Collections.max(rolls));
+		Collections.swap(players, indexOfMax, 0); //moves the player with the highest roll to the front of the list		
+		System.out.println(players.get(0).toString().toUpperCase() + " will go first!");
+		
+		sequenceOfPlay(players, bank, faceDown, uncontrolled);
+	}
+	
+	public static void swap(ArrayList<Player> players)
+	{
+		
 	}
 	
 	public static void main(String[] args)
@@ -157,15 +198,18 @@ public class Game
 		while(choice == 1 || choice == 2 || choice == 3)
 		{
 			if(choice == 1)
+			{
 				playGame(players);
+				break;
+			}
 			else if(choice == 2)
 				settings(players);
 			else if(choice == 3)
 			{
-				exit();
 				break;
 			}
 			choice = menu(players);
-		}		
+		}	
+		exit();
 	}
 }
