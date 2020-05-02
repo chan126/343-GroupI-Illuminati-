@@ -184,11 +184,6 @@ public class Game
 		sequenceOfPlay(players, bank, faceDown, uncontrolled);
 	}
 	
-	public static void swap(ArrayList<Player> players)
-	{
-		
-	}
-	
 	public static void main(String[] args)
 	{
 		ArrayList<Player> players = new ArrayList<Player>();
