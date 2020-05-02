@@ -151,7 +151,7 @@ public class Game
 		
 //		Turn four cards face-up and place them in the center of the table.
 //		These four Groups are the original “uncontrolled Groups".
-		System.out.println("Drawing four cards from the face-down deck...");
+		System.out.println("\nDrawing four cards from the face-down deck...");
 		for(int i = 0; i < 4; i++)
 		{
 			if(faceDown.getCard(i) instanceof SpecialCard)
@@ -162,7 +162,7 @@ public class Game
 			else
 				uncontrolled.addGroup((GroupCard)faceDown.removeCard(i));
 		}
-		System.out.println("The 4 Original Uncontrolled Groups are:");
+		System.out.println("\nThe 4 Original Uncontrolled Groups are:");
 		for(int i = 0; i < uncontrolled.getSize(); i++)
 			System.out.println(i+1 + ") " + uncontrolled.getCard(i));
 		System.out.println();
