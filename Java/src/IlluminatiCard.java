@@ -19,9 +19,4 @@ public class IlluminatiCard extends Card
 		else
 			System.out.println("ERROR: You already have 4 subjects under your Illuminati group!");
 	}
-	
-	public String toString()
-	{
-		return this.name;
-	}
 }
