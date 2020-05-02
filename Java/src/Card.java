@@ -73,4 +73,9 @@ public abstract class Card
 	{
 		balance -= amount;
 	}
+	
+	public String toString()
+	{
+		return this.name;
+	}
 }
