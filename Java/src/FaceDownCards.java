@@ -1,6 +1,7 @@
-package pack;
+package cards;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class FaceDownCards
 {
@@ -99,7 +100,6 @@ public class FaceDownCards
 	
 	public void setGroupCards()
 	{
-		
 		// add all 83 groups here
 		GroupCard AAA = new GroupCard("American Autoduel Association", "");
 		AAA.setAttackPower(1);
@@ -107,7 +107,6 @@ public class FaceDownCards
 		AAA.setIncome(1);
 		AAA.addAlignment("Violent");
 		AAA.addAlignment("Weird");
-		//faceDown.add(AAA);
 		
 		GroupCard ANA = new GroupCard("Anti-Nuclear Activists", 
 				"+2 on any attempt to destroy Nuclear Power Companies.");
@@ -115,15 +114,13 @@ public class FaceDownCards
 		ANA.setResistance(5);
 		ANA.setIncome(1);
 		ANA.addAlignment("Liberal");
-		//faceDown.add(ANA);
 		
 		GroupCard AA = new GroupCard("Antiwar Activist");
-		//AA.setAttackPower(0);
+		AA.setAttackPower(0);
 		AA.setResistance(3);
 		AA.setIncome(1);
 		AA.addAlignment("Peaceful");
 		AA.addAlignment("Liberal");
-		
 		
 		GroupCard BM = new GroupCard("Big Media");
 		BM.setAttackPower(4);
@@ -132,7 +129,6 @@ public class FaceDownCards
 		BM.setIncome(3);
 		BM.addAlignment("Liberal");
 		BM.addAlignment("Straight");
-		
 		
 		GroupCard BS = new GroupCard("Boy Sprouts");
 		BM.setResistance(3);
@@ -161,7 +157,7 @@ public class FaceDownCards
 		CCD.setIncome(3);
 		CCD.addAlignment("Communist");
 		
-		GroupCard CIA = new GroupCard("C.I.A");
+		GroupCard CIA = new GroupCard("C.I.A.");
 		CIA.setAttackPower(6);
 		CIA.setTransferPower(4);
 		CIA.setIncome(0);
@@ -177,7 +173,7 @@ public class FaceDownCards
 		CLA.addAlignment("Communist");
 		CLA.addAlignment("Criminal");
 		
-		GroupCard COB = new GroupCard("Comin Books");
+		GroupCard COB = new GroupCard("Comic Books");
 		COB.setAttackPower(1);
 		COB.setResistance(1);
 		COB.setIncome(2);
@@ -242,14 +238,12 @@ public class FaceDownCards
 		FFC.setIncome(3);
 		FFC.addAlignment("Straight");
 		
-		
-		GroupCard FBI = new GroupCard("F.B.I");
+		GroupCard FBI = new GroupCard("F.B.I.");
 		FBI.setAttackPower(4);
 		FBI.setTransferPower(2);
 		FBI.setIncome(0);
 		FBI.addAlignment("Government");
 		FBI.addAlignment("Straight");
-		
 		
 		GroupCard FED = new GroupCard("Federal Reserve");
 		FED.setAttackPower(5);
@@ -302,9 +296,9 @@ public class FaceDownCards
 		GF.addAlignment("Peaceful");
 		GF.addAlignment("Fanatic");
 		
-		GroupCard GUL = new GroupCard("Gun Lobby", "Normal Resistance3; against any Liberal, Communist, or Weird group, resistance 10");
+		GroupCard GUL = new GroupCard("Gun Lobby", "Normal Resistance 3; against any Liberal, Communist, or Weird group, resistance 10");
 		GUL.setAttackPower(1);
-		GUL.setResistance(10); 
+		GUL.setResistance(3); 
 		GUL.setIncome(1);
 		GUL.addAlignment("Conservative");
 		GUL.addAlignment("Violent");
@@ -353,12 +347,12 @@ public class FaceDownCards
 		IRS.setIncome(2);
 		
 		GroupCard JM = new GroupCard("Junk Mail", "+4 on any attempt to control the Post Office");
-		IRS.setAttackPower(1);
-		IRS.setResistance(3);
-		IRS.setIncome(2);
-		IRS.addAlignment("Criminal");
+		JM.setAttackPower(1);
+		JM.setResistance(3);
+		JM.setIncome(2);
+		JM.addAlignment("Criminal");
 		
-		GroupCard KGB = new GroupCard("KCB", "+2 on any attempt to destroy any group");
+		GroupCard KGB = new GroupCard("KGB", "+2 on any attempt to destroy any group");
 		KGB.setAttackPower(2);
 		KGB.setTransferPower(2);
 		KGB.setIncome(0);
@@ -389,23 +383,23 @@ public class FaceDownCards
 		LOS.setResistance(5);
 		LOS.setIncome(6);
 		LOS.addAlignment("Criminal");
-		LOS.addAlignment("Violent");	
+		LOS.addAlignment("Violent");
 		
 		GroupCard LPD = new GroupCard("Local Police Departments");
-		LOS.setAttackPower(4);
-		LOS.setIncome(1);
-		LOS.addAlignment("Conservative");
-		LOS.addAlignment("Straight");
-		LOS.addAlignment("Violent");
+		LPD.setAttackPower(4);
+		LPD.setIncome(1);
+		LPD.addAlignment("Conservative");
+		LPD.addAlignment("Straight");
+		LPD.addAlignment("Violent");
 		
 		GroupCard MA = new GroupCard("Madison Avenue");
-		LOS.setAttackPower(3);
-		LOS.setResistance(3);
-		LOS.setIncome(2);
-		LOS.addAlignment("Criminal");
-		LOS.addAlignment("Violent");
+		MA.setAttackPower(3);
+		MA.setResistance(3);
+		MA.setIncome(2);
+		MA.addAlignment("Criminal");
+		MA.addAlignment("Violent");
 		
-		GroupCard MAFIA = new GroupCard("The Mafia", "+3 for direct control of any Criminal group");
+		GroupCard MAFIA = new GroupCard("THe Mafia", "+3 for direct control of any Criminal group");
 		MAFIA.setAttackPower(7);
 		MAFIA.setResistance(7);
 		MAFIA.setIncome(6);
@@ -413,18 +407,18 @@ public class FaceDownCards
 		MAFIA.addAlignment("Violent");
 		
 		GroupCard MIB = new GroupCard("The Men in Black");
-		MAFIA.setAttackPower(0);
-		MAFIA.setResistance(2);
-		MAFIA.setIncome(1);
-		MAFIA.addAlignment("Criminal");
-		MAFIA.addAlignment("Weird");
+		MIB.setAttackPower(0);
+		MIB.setResistance(2);
+		MIB.setIncome(1);
+		MIB.addAlignment("Criminal");
+		MIB.addAlignment("Weird");
 		
-		GroupCard MIL = new GroupCard("Malitia");
-		MAFIA.setAttackPower(2);
-		MAFIA.setResistance(4);
-		MAFIA.setIncome(2);
-		MAFIA.addAlignment("Conservative");
-		MAFIA.addAlignment("Violent");
+		GroupCard MIL = new GroupCard("Militia");
+		MIL.setAttackPower(2);
+		MIL.setResistance(4);
+		MIL.setIncome(2);
+		MIL.addAlignment("Conservative");
+		MIL.addAlignment("Violent");
 		
 		GroupCard MOON = new GroupCard("Moonis");
 		MOON.setAttackPower(2);
@@ -458,16 +452,15 @@ public class FaceDownCards
 		NOG.addAlignment("Conservative");
 		NOG.addAlignment("Fanatic");
 		
-		
 		GroupCard NY = new GroupCard("New York");
-		MOON.setAttackPower(7);
-		MOON.setResistance(8);
-		MOON.setIncome(3);
-		MOON.addAlignment("Violent");
-		MOON.addAlignment("Criminal");
-		MOON.addAlignment("Government");
+		NY.setAttackPower(7);
+		NY.setResistance(8);
+		NY.setIncome(3);
+		NY.addAlignment("Violent");
+		NY.addAlignment("Criminal");
+		NY.addAlignment("Government");
 		
-		GroupCard NPC = new GroupCard("Neuclear Power Companies");
+		GroupCard NPC = new GroupCard("Nuclear Power Companies");
 		NPC.setAttackPower(4);
 		NPC.setResistance(4);
 		NPC.setIncome(3);
@@ -563,7 +556,6 @@ public class FaceDownCards
 		SLA.addAlignment("Weird");
 		SLA.addAlignment("Communist");
 		
-		
 		GroupCard SMOF = new GroupCard("S.M.O.F", "+ 5 for direct control of S.F Fans, or +2 for diect control of Trekkies");
 		SMOF.setAttackPower(1);
 		SMOF.setResistance(1);
@@ -571,17 +563,17 @@ public class FaceDownCards
 		SMOF.addAlignment("Weird");
 		
 		GroupCard SFCA = new GroupCard("Society for Creative Anarchism");
-		MOON.setResistance(4);
-		MOON.setIncome(1);
-		MOON.addAlignment("Violent");
-		MOON.addAlignment("Weird");
+		SFCA.setResistance(4);
+		SFCA.setIncome(1);
+		SFCA.addAlignment("Violent");
+		SFCA.addAlignment("Weird");
 		
 		GroupCard SAN = new GroupCard("South American Nazis");
-		MOON.setAttackPower(4);
-		MOON.setResistance(6);
-		MOON.setIncome(2);
-		MOON.addAlignment("Violent");
-		MOON.addAlignment("Weird");
+		SAN.setAttackPower(4);
+		SAN.setResistance(6);
+		SAN.setIncome(2);
+		SAN.addAlignment("Violent");
+		SAN.addAlignment("Weird");
 		
 		GroupCard SUR = new GroupCard("Survivalists", "+2 Resistance to all owner's other groups");
 		SUR.setAttackPower(4);
@@ -648,9 +640,9 @@ public class FaceDownCards
 		UN.addAlignment("Government");
 		
 		GroupCard VG = new GroupCard("Video Games", "+3 for direct control of Convenience Stores.");
-		UN.setAttackPower(2);
-		UN.setResistance(3);
-		UN.setIncome(7);
+		VG.setAttackPower(2);
+		VG.setResistance(3);
+		VG.setIncome(7);
 		
 		GroupCard YUPPIES = new GroupCard("Yuppies");
 		YUPPIES.setAttackPower(1);
@@ -746,18 +738,41 @@ public class FaceDownCards
 		for(int i = 0; i < temp.length; i++) {
 			faceDown.add(temp[i]);
 		}
-		
-    //...
 	}
 
 	public void shuffle()
 	{
-		// WRITE THIS FUNCTION
-	}
-
-	@Override
-	public String toString() {
-		return "FaceDownCards [faceDown=" + faceDown + "]";
+		int x,y;
+		Random rand = new Random();
+		for(int i = 0; i < 1000; i++)
+		{
+			x = rand.nextInt(faceDown.size());
+			y = rand.nextInt(faceDown.size());
+			Card temp;
+			temp = faceDown.get(x);
+			faceDown.set(x, faceDown.get(y));
+			faceDown.set(y,  temp);
+		}
 	}
 	
+	public Card removeCard(int index)
+	{
+		return faceDown.remove(index);
+	}
+	
+	public Card getCard(int index)
+	{
+		return faceDown.get(index);
+	}
+	
+	public void addCard(Card card)
+	{
+		faceDown.add(card);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Face-down Cards: " + faceDown;
+	}
 }
