@@ -164,7 +164,7 @@ public class FaceDownCards
 		CCD.addAlignment("Communist");
 		faceDown.add(CCD);
 		
-		GroupCard CIA = new GroupCard("C.I.A");
+		GroupCard CIA = new GroupCard("C.I.A.");
 		CIA.setAttackPower(6);
 		CIA.setTransferPower(4);
 		CIA.setIncome(0);
@@ -256,7 +256,7 @@ public class FaceDownCards
 		FFC.addAlignment("Straight");
 		faceDown.add(FFC);
 		
-		GroupCard FBI = new GroupCard("F.B.I");
+		GroupCard FBI = new GroupCard("F.B.I.");
 		FBI.setAttackPower(4);
 		FBI.setTransferPower(2);
 		FBI.setIncome(0);
