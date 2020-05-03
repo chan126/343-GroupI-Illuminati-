@@ -1,19 +1,50 @@
 package cards;
 
+import java.util.ArrayList;
+
 public abstract class Card
 {
-	public String name;
-	public String description;
-	public int attackPower;
-	public int transferPower;
-	public int income;
-	public int balance;
-	
-	public void setName(String name)
+	private String name;
+	private String description;
+	private int attackPower;
+	private int transferPower;
+	private int income;
+	private int balance;
+	private Card master;
+	protected int out;
+	public ArrayList<GroupCard> puppets;
+		
+	public Card(String name, String description)
 	{
 		this.name = name;
+		this.description = description;
+		puppets = new ArrayList<GroupCard>();
 	}
 	
+	public Card(String name)
+	{
+		this.name = name;
+		puppets = new ArrayList<GroupCard>();
+	}
+	
+	public void setMaster(Card master)
+	{
+		this.master = master;
+	}
+	
+	public Card getMaster()
+	{
+		return master;
+	}
+	
+	public void addPuppet(GroupCard puppet)
+	{
+		if(puppets.size() < out)
+			puppets.add(puppet);
+		else
+			System.out.println("ERROR: There are no more open arrows for " + name + "!");
+	}
+		
 	public String getName()
 	{
 		return name;
@@ -77,5 +108,15 @@ public abstract class Card
 	public String toString()
 	{
 		return this.name;
+	}
+
+	public int getOut() 
+	{
+		return out;
+	}
+
+	public void setOut(int out) 
+	{
+		this.out = out;
 	}
 }
