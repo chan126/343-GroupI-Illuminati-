@@ -12,6 +12,7 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class Game
 {
@@ -88,6 +89,7 @@ public class Game
 	
 	public static void playGame(ArrayList<Player> players)
 	{
+		System.out.println("\nSTARTING GAME");
 		Scanner in = new Scanner(System.in);
 		
 		//each player chooses their Illuminati card
@@ -194,16 +196,20 @@ public class Game
 			Card drawn = faceDown.removeCard(0);
 			if(drawn instanceof SpecialCard)
 			{
-				System.out.println("You drew a Special Card!");
+				System.out.println("\nYou drew a Special Card!");
 				System.out.println("Adding " + drawn + " to your Special Card deck...");
 				player.addSpecialCard((SpecialCard)drawn);
 			}
 			else
 			{
-				System.out.println("You drew a Group Card - " + drawn + "!");
+				System.out.println("\nYou drew a Group Card - " + drawn + "!");
 				System.out.println("Adding " + drawn + " to the Uncontrolled Groups...");
 				uncontrolled.addGroup((GroupCard)drawn);
 			}
+			
+			System.out.println("-----------------------------------------------------------------------");
+			System.out.println(uncontrolled);
+			System.out.println("-----------------------------------------------------------------------");
 			
 //			3. Take two “actions.” See list, below.
 //			4. Take any “free actions.” These do not count against the two actions allowed during each turn. 
@@ -212,13 +218,14 @@ public class Game
 //			may be moved to an adjacent Group. Two money
 //			transfers are allowed per turn.
 //			6. Take special-power actions.
-			System.out.println("\nTake two actions. ");
+			System.out.println("\n" + player + ", take two actions. ");
 			for(int i = 0; i < 2; i++)
 			{
 				int choice = actionMenu();
-				switch(choice) {
+				switch(choice) 
+				{
 				  case 1:
-				      attackGroup(player, players);
+				      attackGroup(player, players, uncontrolled);
 				      break;
 				  case 2:
 				      transferMoney(player);
@@ -238,7 +245,7 @@ public class Game
 					  i--;
 					  break;
 				  case 7:
-					  useSpecial();
+					  useSpecial(player);
 					  i--;
 					  break;
 				  case 8:
@@ -269,22 +276,123 @@ public class Game
 	public static int actionMenu()
 	{
 		Scanner in = new Scanner(System.in);
-		System.out.println("REGULAR ACTIONS:"
-				+ "\n1) Attack a Group"
+		System.out.println("\nREGULAR ACTIONS:"
+				+ "\n1) Attack a Group" //PARTIALLY COMPLETE
 				+ "\n2) Transfer Money"
 				+ "\n3) Move a Group"
 				+ "\n4) Give a Group away"
 				+ "\nFREE ACTIONS:"
 				+ "\n5) Drop a Group" //COMPLETE
 				+ "\n6) Give away money or Specials" //COMPLETE
-				+ "\n7) Use a Special card"
+				+ "\n7) Use a Special card" //PARTIALLY COMPLETE
 				+ "\n8) PASS [and collect 5MB]"); //COMPLETE
 		return in.nextInt();
 	}
 	
-	public static void attackGroup(Player player, ArrayList<Player> players)
+	public static void attackGroup(Player player, ArrayList<Player> players, UncontrolledGroups uncontrolled)
 	{
+		Scanner in = new Scanner(System.in);
+		
 		Dice dice = new Dice();
+		System.out.println("1) Attack to Control"
+				+ "\n2) Attack to Neutralize"
+				+ "\n3) Attack to Destroy");
+		int attackType = in.nextInt();
+		
+		switch(attackType) 
+		{
+		  case 1:
+		      attackToControl(player, players, uncontrolled);
+		      break;
+		  case 2:
+			  attackToNeutralize(player, players);
+		      break;
+		  case 3:
+			  attackToDestroy(player, players);
+		      break;
+	      default:
+	    	  break;
+		}
+	}
+	
+	public static void attackToControl(Player player, ArrayList<Player> players, UncontrolledGroups uncontrolled)
+	{
+		Scanner in = new Scanner(System.in);
+		Dice dice = new Dice();
+		HashMap<Integer, GroupCard> cardID = new HashMap<>();
+		HashMap<Integer, Player> playerID = new HashMap<>();
+		
+		System.out.println("-------------------- ATTACK TO CONTROL --------------------");
+		
+		System.out.println("Which group of yours is attacking?");
+		System.out.println("1) "+ player.illuminati);
+		for(int i = 0; i < player.groupCards.size(); i++)
+			System.out.println(i+2 + ") " + player.groupCards.get(i));
+		
+		int attacker = in.nextInt();
+		Card attackingGroup;
+		if(attacker == 1)
+			attackingGroup = player.illuminati;
+		else
+			attackingGroup = player.groupCards.get(attacker - 2);
+		
+		System.out.println("\n" + uncontrolled); //display the uncontrolled groups
+		for(int i = 0; i < uncontrolled.getSize(); i++)
+			cardID.put(i+1, uncontrolled.getCard(i));
+		
+		int key = uncontrolled.getSize() + 1;		
+		for(Player attackee : players) //display all the players' available groups
+		{
+			System.out.println(attackee.toString().toUpperCase() + "'S UNCONTROLLED GROUPS:");
+			for(GroupCard group : attackee.groupCards)
+			{
+				if(group.getOut() > 0)
+				{
+					cardID.put(key, group);
+					playerID.put(key, player);
+					System.out.println("\n" + key + ") " + group);
+					key++;
+				}
+			}
+		}
+		System.out.print("Enter the group to attack: ");
+		int attack = in.nextInt();
+		Player attackeePlayer = playerID.get(attack);
+		GroupCard attackeeGroup = cardID.get(attack);
+		
+		System.out.println("\n" + attackingGroup + " will attempt to control " + attackeeGroup + ".");
+		
+		int requiredRoll = attackingGroup.getAttackPower() - attackeeGroup.getResistance();
+		System.out.println(attackingGroup + "'s attack power: " + attackingGroup.getAttackPower());
+		System.out.println(attackeeGroup + "'s resistance: " + attackeeGroup.getResistance());
+		System.out.println("Required roll: " + requiredRoll);
+		
+		int attackRoll = dice.roll();
+		if(attackRoll == 11 || attackRoll == 12)
+		{
+			System.out.println("You rolled " + attackRoll + " - AUTOMATIC FAILURE");
+		}
+		else if(attackRoll <= requiredRoll)
+		{
+			System.out.println("You rolled " + attackRoll + " - SUCCESS!");
+			//attackeePlayer.groupCards.remove(attackeeGroup);
+			//player.addGroupCard(attackeeGroup);
+		}
+		else if(attackRoll > requiredRoll)
+		{
+			System.out.println("You rolled " + attackRoll + " - The attack failed!");
+		}
+		
+	}
+	
+	public static void attackToNeutralize(Player player, ArrayList<Player> players)
+	{
+		System.out.println("-------------------- ATTACK TO NEUTRALIZE --------------------");
+	}
+	
+	public static void attackToDestroy(Player player, ArrayList<Player> players)
+	{
+		System.out.println("-------------------- ATTACK TO DESTROY --------------------");
 	}
 	
 	public static void transferMoney(Player player)
@@ -350,15 +458,26 @@ public class Game
 		}
 	}
 	
-	public static void useSpecial()
-	{
-		
+	public static void useSpecial(Player player)
+	{		
+		if(player.specialCards.size() > 0)
+		{
+			Scanner in = new Scanner(System.in);
+			System.out.println("Which Special card would you like to use?");
+			for(int i = 0; i < player.specialCards.size(); i++)
+				System.out.println(i+1 + ") " + player.specialCards.get(i));
+			int specialIndex = in.nextInt() - 1;
+			
+			System.out.println("You have chosen " + player.specialCards.get(specialIndex) + "!\n");
+		}
+		else
+			System.out.println("You have no Special cards to use...\n");
 	}
 	
 	public static void passTurn(Player player, Bank bank)
 	{
 		System.out.println("You have chosen to pass this turn.");
-		System.out.println("Collecting 5MB from the bank...");
+		System.out.println("Collecting 5 MB from the bank...");
 		bank.withdraw(player.illuminati);
 	}
 	
