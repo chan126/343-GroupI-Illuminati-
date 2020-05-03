@@ -1,25 +1,33 @@
-import java.util.ArrayList;
-
 import cards.Card;
 
 public class Bank
 {
-	public int bankTotal;
+	private int bankTotal;
 	
 	public Bank()
 	{
-		bankTotal = 1106;
+		setBankTotal(1106);
 	}
 	
 	public void withdraw(Card card)
 	{
-		card.addToBalance(card.income);
-		bankTotal -= card.income;
+		card.addToBalance(card.getIncome());
+		setBankTotal(getBankTotal() - card.getIncome());
 	}
 	
 	public void deposit(Card card, int amount)
 	{
 		card.removeFromBalance(amount);
-		bankTotal += amount;
+		setBankTotal(getBankTotal() + amount);
+	}
+
+	public int getBankTotal() 
+	{
+		return bankTotal;
+	}
+
+	public void setBankTotal(int bankTotal) 
+	{
+		this.bankTotal = bankTotal;
 	}
 }
