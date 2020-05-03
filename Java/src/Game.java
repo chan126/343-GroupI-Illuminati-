@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import cards.Card;
 import cards.FaceDownCards;
 import cards.GroupCard;
 import cards.IlluminatiCard;
@@ -29,7 +30,14 @@ public class Game
 			System.out.print("Player " + playerCount + ": ");
 			players.add(new Player(username));
 		}
-		System.out.println("Player List: " + Arrays.toString(players.toArray()));
+		System.out.print("Player List: ");
+		for(int i = 0; i < players.size(); i++)
+		{
+			System.out.print(players.get(i));
+			if(i < players.size() - 1)
+				System.out.print(", ");
+		}
+		System.out.println();
 	}
 	
 	public static int menu(ArrayList<Player> players)
@@ -76,33 +84,6 @@ public class Game
 	public static void exit()
 	{
 		System.out.println("\nThanks for playing!");
-	}
-	
-	public static void sequenceOfPlay(ArrayList<Player> players, Bank bank, FaceDownCards faceDown, UncontrolledGroups uncontrolled)
-	{
-//		Play goes counter-clockwise around the table.
-//		1. Collect income on all cards that have an Income
-//		number.
-		
-		
-//		2. Draw a card. If it is a Special card, the player keeps
-//		it. If the card is a Group, it is placed face-up in the
-//		uncontrolled area.
-		
-//		3. Take two “actions.” See list, below.
-		
-//		4. Take any “free actions.” These do not count against
-//		the two actions allowed during each turn. They may
-//		be taken before, between, or after the two regular
-//		actions. See below for list.
-		
-//		5. Transfer money. Part or all of any Group’s money
-//		may be moved to an adjacent Group. Two money
-//		transfers are allowed per turn.
-		
-//		6. Take special-power actions.
-		
-//		7. Add targets. Draw cards until there are two uncontrolled Groups. Discard any Specials drawn.
 	}
 	
 	public static void playGame(ArrayList<Player> players)
@@ -179,9 +160,206 @@ public class Game
 		}
 		int indexOfMax = rolls.indexOf(Collections.max(rolls));
 		Collections.swap(players, indexOfMax, 0); //moves the player with the highest roll to the front of the list		
-		System.out.println(players.get(0).toString().toUpperCase() + " will go first!");
+		System.out.println("\n" + players.get(0).toString().toUpperCase() + " will go first!");
+		
+		System.out.print("Player order: ");
+		for(int i = 0; i < players.size(); i++)
+		{
+			System.out.print(players.get(i));
+			if(i < players.size() - 1)
+				System.out.print(", ");
+		}
+		System.out.println("\n");
 		
 		sequenceOfPlay(players, bank, faceDown, uncontrolled);
+	}
+	
+	public static void sequenceOfPlay(ArrayList<Player> players, Bank bank, FaceDownCards faceDown, UncontrolledGroups uncontrolled)
+	{
+//		Play goes counter-clockwise around the table.
+		for(Player player : players)
+		{
+			System.out.println("It is now " + player.toString().toUpperCase() + "'s turn.");
+//			1. Collect income on all cards that have an Income number.
+			bank.withdraw(player.illuminati);
+			System.out.println(player.illuminati + " collects $" + player.illuminati.getIncome() + " from the bank.");
+			for(GroupCard group : player.groupCards)
+			{
+				bank.withdraw(group);
+				System.out.println(group + " collects $" + group.getIncome() + " from the bank.");
+			}
+			
+//			2. Draw a card. If it is a Special card, the player keeps it.
+//			If the card is a Group, it is placed face-up in the uncontrolled area.
+			Card drawn = faceDown.removeCard(0);
+			if(drawn instanceof SpecialCard)
+			{
+				System.out.println("You drew a Special Card!");
+				System.out.println("Adding " + drawn + " to your Special Card deck...");
+				player.addSpecialCard((SpecialCard)drawn);
+			}
+			else
+			{
+				System.out.println("You drew a Group Card - " + drawn + "!");
+				System.out.println("Adding " + drawn + " to the Uncontrolled Groups...");
+				uncontrolled.addGroup((GroupCard)drawn);
+			}
+			
+//			3. Take two “actions.” See list, below.
+//			4. Take any “free actions.” These do not count against the two actions allowed during each turn. 
+//			They may be taken before, between, or after the two regular actions. See below for list.
+//			5. Transfer money. Part or all of any Group’s money
+//			may be moved to an adjacent Group. Two money
+//			transfers are allowed per turn.
+//			6. Take special-power actions.
+			System.out.println("\nTake two actions. ");
+			for(int i = 0; i < 2; i++)
+			{
+				int choice = actionMenu();
+				switch(choice) {
+				  case 1:
+				      attackGroup(player, players);
+				      break;
+				  case 2:
+				      transferMoney(player);
+				      break;
+				  case 3:
+					  moveGroup(player);
+				      break;
+				  case 4:
+					  giveGroup();
+					  break;
+				  case 5:
+					  dropGroup(player);
+					  i--;
+					  break;
+				  case 6: 
+					  giveMoneyOrSpecials(player, players);
+					  i--;
+					  break;
+				  case 7:
+					  useSpecial();
+					  i--;
+					  break;
+				  case 8:
+					  passTurn(player, bank);
+					  i = 2;
+					  break;
+			      default:
+			    	  break;
+				}
+			}
+			
+//			7. Add targets. Draw cards until there are two uncontrolled Groups. Discard any Specials drawn.
+			while(uncontrolled.getSize() < 2)
+			{
+				System.out.println("There are less than two uncontrolled Groups. Adding to pile...");
+				drawn = faceDown.removeCard(0);
+				if(drawn instanceof GroupCard)
+				{
+					System.out.println("You drew a Group Card - " + drawn + "!");
+					System.out.println("Adding " + drawn + " to the Uncontrolled Groups...");
+					uncontrolled.addGroup((GroupCard)drawn);
+				}
+			}
+			System.out.println(player + "'s turn is over.\n");
+		}
+	}
+	
+	public static int actionMenu()
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.println("REGULAR ACTIONS:"
+				+ "\n1) Attack a Group"
+				+ "\n2) Transfer Money"
+				+ "\n3) Move a Group"
+				+ "\n4) Give a Group away"
+				+ "\nFREE ACTIONS:"
+				+ "\n5) Drop a Group" //COMPLETE
+				+ "\n6) Give away money or Specials" //COMPLETE
+				+ "\n7) Use a Special card"
+				+ "\n8) PASS [and collect 5MB]"); //COMPLETE
+		return in.nextInt();
+	}
+	
+	public static void attackGroup(Player player, ArrayList<Player> players)
+	{
+		Dice dice = new Dice();
+	}
+	
+	public static void transferMoney(Player player)
+	{
+		
+	}
+	
+	public static void moveGroup(Player player)
+	{
+		
+	}
+	
+	public static void giveGroup()
+	{
+		
+	}
+	
+	public static void dropGroup(Player player)
+	{
+		Scanner in = new Scanner(System.in);
+		
+		System.out.println("Choose a group to drop: ");
+		for(int i = 0; i < player.groupCards.size(); i++)
+			System.out.println(i+1 + ") " + player.groupCards.get(i));
+		int index = in.nextInt();
+		GroupCard removed = player.groupCards.remove(index); //remove card
+		for(GroupCard puppet : removed.puppets)
+			player.removeGroupCard(puppet); //removing the puppets as well
+	}
+	
+	public static void giveMoneyOrSpecials(Player player, ArrayList<Player> players)
+	{
+		Scanner in = new Scanner(System.in);
+		
+		System.out.println("Choose a player to make the transfer to: ");
+		for(int i = 0; i < players.size(); i++)
+			System.out.println(i+1 + ") " + players.get(i));
+		int recipientIndex  = in.nextInt() - 1;
+		
+		System.out.println("What would you like to transfer?"
+				+ "\n1) Special card"
+				+ "\n2) Money");
+		int transferChoice = in.nextInt();
+		if(transferChoice == 1)
+		{
+			System.out.println("Choose the Special card you would like to transfer.");
+			for(int i = 0; i < player.specialCards.size(); i++)
+				System.out.println(i+1 + ") " + player.specialCards.get(i));
+			int cardIndex = in.nextInt();
+			SpecialCard special = player.specialCards.remove(cardIndex - 1); //remove from player
+			players.get(recipientIndex).addSpecialCard(special); //transfer to new player
+			
+			System.out.println("Transferred " + special + " to " + players.get(recipientIndex) + "!");
+		}
+		else if(transferChoice == 2)
+		{
+			System.out.print("Enter the amount you would like to transfer: $");
+			int amount = in.nextInt();
+			player.illuminati.removeFromBalance(amount);
+			players.get(recipientIndex).illuminati.addToBalance(amount);
+			
+			System.out.println("Transferred $" + amount + " to " + players.get(recipientIndex) + "!");
+		}
+	}
+	
+	public static void useSpecial()
+	{
+		
+	}
+	
+	public static void passTurn(Player player, Bank bank)
+	{
+		System.out.println("You have chosen to pass this turn.");
+		System.out.println("Collecting 5MB from the bank...");
+		bank.withdraw(player.illuminati);
 	}
 	
 	public static void main(String[] args)
