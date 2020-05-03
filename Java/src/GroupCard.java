@@ -4,25 +4,19 @@ import java.util.ArrayList;
 
 public class GroupCard extends Card
 {
-	public int resistance;
-	public ArrayList<String> alignments;
-	public GroupCard master;
-	public ArrayList<GroupCard> puppets;
+	private int resistance;
+	private ArrayList<String> alignments;
 	
 	public GroupCard(String name, String description)
 	{
-		this.name = name;
-		this.description = description;
+		super(name, description);
 		alignments = new ArrayList<String>();
-		puppets = new ArrayList<GroupCard>();
 	}
 	
 	public GroupCard(String name)
 	{
-		this.name = name;
-		this.description = null;
+		super(name);
 		alignments = new ArrayList<String>();
-		puppets = new ArrayList<GroupCard>();
 	}
 	
 	public void setResistance(int resistance)
@@ -33,16 +27,6 @@ public class GroupCard extends Card
 	public int getResistance()
 	{
 		return resistance;
-	}
-	
-	public void setMaster(GroupCard master)
-	{
-		this.master = master;
-	}
-	
-	public void addPuppet(GroupCard puppet)
-	{
-		puppets.add(puppet);
 	}
 	
 	public void addAlignment(String alignment)
