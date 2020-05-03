@@ -92,11 +92,10 @@ public class Game
 		System.out.println("\nSTARTING GAME");
 		Scanner in = new Scanner(System.in);
 		
-		//each player chooses their Illuminati card
-		IlluminatiCards illuminati = new IlluminatiCards();
-		Bank bank = new Bank();
+		IlluminatiCards illuminati = new IlluminatiCards(); // declares and instantiates the 8 Illuminati cards
+		Bank bank = new Bank(); // declares and instantiates the Bank that has a total of 1106 MB
 		FaceDownCards faceDown = new FaceDownCards(); // contains all game cards (Group and Special)
-		UncontrolledGroups uncontrolled = new UncontrolledGroups();
+		UncontrolledGroups uncontrolled = new UncontrolledGroups(); // the uncontrolled deck, starts off empty
 		
 // 		Remove the eight Illuminati cards from the deck; they
 //		have dark backs to make them easy to find. Place them facedown on the table. Each player draws an Illuminati card,
@@ -106,30 +105,28 @@ public class Game
 		{
 			System.out.println("\n" + player + ", please choose your Illuminati group.");
 			int i = 0;
-			for(IlluminatiCard card : illuminati.getCards())
+			for(IlluminatiCard card : illuminati.getCards()) // displays all available Illuminati cards
 			{
 				System.out.println(i+1 + ") " + card);
 				i++;
 			}
 			int choice = in.nextInt();
-			IlluminatiCard myCard = illuminati.remove(choice-1);
-			player.setIlluminati(myCard);
+			IlluminatiCard myCard = illuminati.remove(choice-1); // removes the chosen Illuminati card from the deck
+			player.setIlluminati(myCard);			     // and sets it as the Player's Illumninati card
 			
 			System.out.println(player.toString().toUpperCase() + " has selected " 
 					+ myCard.toString().toUpperCase() + "!");
 			
-			player.collectIncome(myCard, bank);
+			player.collectIncome(myCard, bank); // collects the Illuminati's income amount from the bank
 			System.out.println("Collecting $" + myCard.getIncome() + " from the Bank...");
 		}
 		System.out.println("\nAll players have selected their Illuminati groups.");
-		for(Player player : players)
-		{
+		for(Player player : players) // once all players choose their Illuminati, they are printed out
 			System.out.println(player + ": " + player.getIlluminati());
-		}
 		
-		System.out.println("\nShuffling cards...");
 //		Shuffle the remaining cards (including Specials) and
 //		place them face-down in the center of the table.
+		System.out.println("\nShuffling cards...");
 		faceDown.shuffle();
 		
 //		Turn four cards face-up and place them in the center of the table.
@@ -137,8 +134,8 @@ public class Game
 		System.out.println("\nDrawing four cards from the face-down deck...");
 		for(int i = 0; i < 4; i++)
 		{
-			if(faceDown.getCard(i) instanceof SpecialCard)
-			{
+			if(faceDown.getCard(i) instanceof SpecialCard) // Special cards are discarded at the beginning of the game
+			{					       // when drawing the 4 Original Uncontrolled Groups
 				faceDown.addCard(faceDown.removeCard(i));
 				i--;
 			}
@@ -153,18 +150,18 @@ public class Game
 //		Each player rolls two dice; the player with the highest
 //		roll plays first.
 		Dice dice = new Dice();
-		ArrayList<Integer> rolls = new ArrayList<>();
+		ArrayList<Integer> rolls = new ArrayList<>(); // keeps track of each player's dice rolls
 		for(int i = 0; i < players.size(); i++)
 		{
-			int roll = dice.roll();
+			int roll = dice.roll(); // a random number from 1-12
 			System.out.println(players.get(i) + " rolls " + roll);
 			rolls.add(roll);
 		}
-		int indexOfMax = rolls.indexOf(Collections.max(rolls));
+		int indexOfMax = rolls.indexOf(Collections.max(rolls)); // gets the index of the highest roll in the rolls ArrayList
 		Collections.swap(players, indexOfMax, 0); //moves the player with the highest roll to the front of the list		
 		System.out.println("\n" + players.get(0).toString().toUpperCase() + " will go first!");
 		
-		System.out.print("Player order: ");
+		System.out.print("Player order: "); //displasy the order of play
 		for(int i = 0; i < players.size(); i++)
 		{
 			System.out.print(players.get(i));
@@ -173,7 +170,8 @@ public class Game
 		}
 		System.out.println("\n");
 		
-		sequenceOfPlay(players, bank, faceDown, uncontrolled);
+		
+		sequenceOfPlay(players, bank, faceDown, uncontrolled); 
 	}
 	
 	public static void sequenceOfPlay(ArrayList<Player> players, Bank bank, FaceDownCards faceDown, UncontrolledGroups uncontrolled)
