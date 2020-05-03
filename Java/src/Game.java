@@ -16,11 +16,16 @@ import java.util.HashMap;
 
 public class Game
 {
+	/**
+	 * Sets up the players and their usernames.
+	 * @param players - holds the Player objects; initially empty when called in MAIN
+	 */
 	public static void welcome(ArrayList<Player> players)
 	{
 		Scanner in = new Scanner(System.in);
 		System.out.println("WELCOME TO ILLUMINATI");
 		
+		// each player enters their username
 		System.out.println("Please enter the usernames of the people who will be playing: ");
 		int playerCount = 1;
 		System.out.print("Player " + playerCount + ": ");
@@ -31,6 +36,8 @@ public class Game
 			System.out.print("Player " + playerCount + ": ");
 			players.add(new Player(username));
 		}
+		
+		// once all players have been entered, display the list
 		System.out.print("Player List: ");
 		for(int i = 0; i < players.size(); i++)
 		{
@@ -41,7 +48,11 @@ public class Game
 		System.out.println();
 	}
 	
-	public static int menu(ArrayList<Player> players)
+	/**
+	 * Main menu displays 3 main options to choose from
+	 * @return 1, 2, or 3 decides Start Game, Settings, or Exit Game, respectively
+	 */
+	public static int menu()
 	{
 		Scanner in = new Scanner(System.in);
 		
@@ -53,6 +64,11 @@ public class Game
 		return in.nextInt();
 	}
 	
+	/**
+	 * Settings of Illuminati
+	 * Players can be added or removed
+	 * @param players - the game's list of players
+	 */
 	public static void settings(ArrayList<Player> players)
 	{
 		Scanner in = new Scanner(System.in);
@@ -62,7 +78,7 @@ public class Game
 		
 		int choice = in.nextInt();
 		
-		if(choice == 1)
+		if(choice == 1) // add a player
 		{
 			System.out.println("\nCurrent Player List: " + Arrays.toString(players.toArray()));
 			System.out.print("Enter the player to add: ");
@@ -71,7 +87,7 @@ public class Game
 			players.add(newPlayer);
 			System.out.println("Added " + username.toUpperCase() + " to the game!");
 		}
-		else if(choice == 2)
+		else if(choice == 2) // remove a player
 		{
 			System.out.println("\nCurrent Player List: " + Arrays.toString(players.toArray()));
 			System.out.print("Enter the player number to remove: ");
@@ -81,12 +97,20 @@ public class Game
 			System.out.println("Removed " + username.toUpperCase() + " from the game!");
 		}
 	}
-	
+
+	/**
+	 * simply prints out an exit statement that lets the players know that the game has exited
+	 */
 	public static void exit()
 	{
 		System.out.println("\nThanks for playing!");
 	}
 	
+	/**
+	 * sets up the game: choosing Illuminati groups, shuffling the face-down cards, 
+	 * drawing 4 and adding them to the uncontrolled deck, deciding which player goes first by rolling the dice
+	 * @param players - the ArrayList that holds the Players playing the game
+	 */
 	public static void playGame(ArrayList<Player> players)
 	{
 		System.out.println("\nSTARTING GAME");
@@ -161,7 +185,7 @@ public class Game
 		Collections.swap(players, indexOfMax, 0); //moves the player with the highest roll to the front of the list		
 		System.out.println("\n" + players.get(0).toString().toUpperCase() + " will go first!");
 		
-		System.out.print("Player order: "); //displasy the order of play
+		System.out.print("Player order: "); //display the order of play
 		for(int i = 0; i < players.size(); i++)
 		{
 			System.out.print(players.get(i));
@@ -174,16 +198,24 @@ public class Game
 		sequenceOfPlay(players, bank, faceDown, uncontrolled); 
 	}
 	
+	/**
+	 * goes through each player's turn until the game is over
+	 * @param players - the ArrayList of Players participating in the game
+	 * @param bank - the Bank that controls the economy
+	 * @param faceDown - holds the Group and Special cards that have yet to be revealed
+	 * @param uncontrolled - the cards that have been drawn from the face-down pile of cards
+	 */
 	public static void sequenceOfPlay(ArrayList<Player> players, Bank bank, FaceDownCards faceDown, UncontrolledGroups uncontrolled)
 	{
 //		Play goes counter-clockwise around the table.
 		for(Player player : players)
 		{
 			System.out.println("It is now " + player.toString().toUpperCase() + "'s turn.");
+			
 //			1. Collect income on all cards that have an Income number.
 			bank.withdraw(player.illuminati);
 			System.out.println(player.illuminati + " collects $" + player.illuminati.getIncome() + " from the bank.");
-			for(GroupCard group : player.groupCards)
+			for(GroupCard group : player.groupCards) // collect income from each of the Player's Groups
 			{
 				bank.withdraw(group);
 				System.out.println(group + " collects $" + group.getIncome() + " from the bank.");
@@ -192,13 +224,13 @@ public class Game
 //			2. Draw a card. If it is a Special card, the player keeps it.
 //			If the card is a Group, it is placed face-up in the uncontrolled area.
 			Card drawn = faceDown.removeCard(0);
-			if(drawn instanceof SpecialCard)
+			if(drawn instanceof SpecialCard) // Special cards go to the Player who drew it
 			{
 				System.out.println("\nYou drew a Special Card!");
 				System.out.println("Adding " + drawn + " to your Special Card deck...");
 				player.addSpecialCard((SpecialCard)drawn);
 			}
-			else
+			else // Group cards go to the uncontrolled deck
 			{
 				System.out.println("\nYou drew a Group Card - " + drawn + "!");
 				System.out.println("Adding " + drawn + " to the Uncontrolled Groups...");
@@ -206,7 +238,7 @@ public class Game
 			}
 			
 			System.out.println("-----------------------------------------------------------------------");
-			System.out.println(uncontrolled);
+			System.out.println(uncontrolled); // display the current uncontrolled groups
 			System.out.println("-----------------------------------------------------------------------");
 			
 //			3. Take two “actions.” See list, below.
@@ -220,7 +252,7 @@ public class Game
 			for(int i = 0; i < 2; i++)
 			{
 				int choice = actionMenu();
-				switch(choice) 
+				switch(choice)  // 
 				{
 				  case 1:
 				      attackGroup(player, players, uncontrolled);
@@ -235,20 +267,20 @@ public class Game
 					  giveGroup();
 					  break;
 				  case 5:
-					  dropGroup(player);
-					  i--;
+					  dropGroup(player); // FREE ACTION
+					  i--; // this allows the action to count as a free action during the loop
 					  break;
 				  case 6: 
-					  giveMoneyOrSpecials(player, players);
-					  i--;
+					  giveMoneyOrSpecials(player, players); // FREE ACTION
+					  i--; // this allows the action to count as a free action during the loop
 					  break;
 				  case 7:
-					  useSpecial(player);
-					  i--;
+					  useSpecial(player); // FREE ACTION
+					  i--; // this allows the action to count as a free action during the loop
 					  break;
 				  case 8:
-					  passTurn(player, bank);
-					  i = 2;
+					  passTurn(player, bank); // skip both turns and just collect 5 MB
+					  i = 2; // immediately causes the loop to end
 					  break;
 			      default:
 			    	  break;
@@ -256,21 +288,27 @@ public class Game
 			}
 			
 //			7. Add targets. Draw cards until there are two uncontrolled Groups. Discard any Specials drawn.
-			while(uncontrolled.getSize() < 2)
+			while(uncontrolled.getSize() < 2) // if there are less than 2 uncontrolled groups, continue drawing until there are at least 2
 			{
 				System.out.println("There are less than two uncontrolled Groups. Adding to pile...");
 				drawn = faceDown.removeCard(0);
-				if(drawn instanceof GroupCard)
+				if(drawn instanceof GroupCard) // ignores Special cards
 				{
 					System.out.println("You drew a Group Card - " + drawn + "!");
 					System.out.println("Adding " + drawn + " to the Uncontrolled Groups...");
 					uncontrolled.addGroup((GroupCard)drawn);
 				}
+				else
+					faceDown.addCard(drawn); // Special cards get added back to the face-down pile
 			}
 			System.out.println(player + "'s turn is over.\n");
 		}
 	}
 	
+	/**
+	 * the menu that asks the Player to perform an action
+	 * @return an integeer from 1-8, that will perform its respective action
+	 */
 	public static int actionMenu()
 	{
 		Scanner in = new Scanner(System.in);
@@ -287,6 +325,12 @@ public class Game
 		return in.nextInt();
 	}
 	
+	/**
+	 * a player decides to attack an uncontrolled group or a Player's group
+	 * @param player - the player who is attacking
+	 * @param players - the ArrayList of players
+	 * @param uncontrolled - the pile of uncontrolled groups
+	 */
 	public static void attackGroup(Player player, ArrayList<Player> players, UncontrolledGroups uncontrolled)
 	{
 		Scanner in = new Scanner(System.in);
@@ -303,10 +347,10 @@ public class Game
 		      attackToControl(player, players, uncontrolled);
 		      break;
 		  case 2:
-			  attackToNeutralize(player, players);
+			  attackToNeutralize(player, players, uncontrolled);
 		      break;
 		  case 3:
-			  attackToDestroy(player, players);
+			  attackToDestroy(player, players, uncontrolled);
 		      break;
 	      default:
 	    	  break;
@@ -322,6 +366,7 @@ public class Game
 		
 		System.out.println("-------------------- ATTACK TO CONTROL --------------------");
 		
+		// ask which group of the Player is attacking
 		System.out.println("Which group of yours is attacking?");
 		System.out.println("1) "+ player.illuminati);
 		for(int i = 0; i < player.groupCards.size(); i++)
@@ -330,9 +375,9 @@ public class Game
 		int attacker = in.nextInt();
 		Card attackingGroup;
 		if(attacker == 1)
-			attackingGroup = player.illuminati;
+			attackingGroup = player.illuminati; // the attacking group can either be the Player's Illuminati, 
 		else
-			attackingGroup = player.groupCards.get(attacker - 2);
+			attackingGroup = player.groupCards.get(attacker - 2); // or it can be a Group
 		
 		System.out.println("\n" + uncontrolled); //display the uncontrolled groups
 		for(int i = 0; i < uncontrolled.getSize(); i++)
@@ -341,10 +386,10 @@ public class Game
 		int key = uncontrolled.getSize() + 1;		
 		for(Player attackee : players) //display all the players' available groups
 		{
-			System.out.println(attackee.toString().toUpperCase() + "'S UNCONTROLLED GROUPS:");
-			for(GroupCard group : attackee.groupCards)
+			System.out.println(attackee.toString().toUpperCase() + "'S UNCONTROLLED GROUPS:"); 
+			for(GroupCard group : attackee.groupCards) // display all the available groups to control
 			{
-				if(group.getOut() > 0)
+				if(group.getOut() > 0)				   // doesn't display the cards whose arrows are all accupied (out variable = 0)
 				{
 					cardID.put(key, group);
 					playerID.put(key, player);
@@ -355,22 +400,23 @@ public class Game
 		}
 		System.out.print("Enter the group to attack: ");
 		int attack = in.nextInt();
-		Player attackeePlayer = playerID.get(attack);
-		GroupCard attackeeGroup = cardID.get(attack);
+		Player attackeePlayer = playerID.get(attack); // identify the player being attacked
+		GroupCard attackeeGroup = cardID.get(attack); // identify the group being attacked
 		
 		System.out.println("\n" + attackingGroup + " will attempt to control " + attackeeGroup + ".");
 		
+		// roll the dice and display the result
 		int requiredRoll = attackingGroup.getAttackPower() - attackeeGroup.getResistance();
 		System.out.println(attackingGroup + "'s attack power: " + attackingGroup.getAttackPower());
 		System.out.println(attackeeGroup + "'s resistance: " + attackeeGroup.getResistance());
 		System.out.println("Required roll: " + requiredRoll);
 		
 		int attackRoll = dice.roll();
-		if(attackRoll == 11 || attackRoll == 12)
+		if(attackRoll == 11 || attackRoll == 12) // rolling 11 or 12 are automatic failures
 		{
 			System.out.println("You rolled " + attackRoll + " - AUTOMATIC FAILURE");
 		}
-		else if(attackRoll <= requiredRoll)
+		else if(attackRoll <= requiredRoll) // the roll must be at most the required roll to be successful
 		{
 			System.out.println("You rolled " + attackRoll + " - SUCCESS!");
 			//attackeePlayer.groupCards.remove(attackeeGroup);
@@ -383,12 +429,12 @@ public class Game
 		
 	}
 	
-	public static void attackToNeutralize(Player player, ArrayList<Player> players)
+	public static void attackToNeutralize(Player player, ArrayList<Player> players, UncontrolledGroups uncontrolled)
 	{
 		System.out.println("-------------------- ATTACK TO NEUTRALIZE --------------------");
 	}
 	
-	public static void attackToDestroy(Player player, ArrayList<Player> players)
+	public static void attackToDestroy(Player player, ArrayList<Player> players, UncontrolledGroups uncontrolled)
 	{
 		System.out.println("-------------------- ATTACK TO DESTROY --------------------");
 	}
@@ -408,6 +454,10 @@ public class Game
 		
 	}
 	
+	/**
+	 * drops a group and its puppets from a Player's power structure
+	 * @param player
+	 */
 	public static void dropGroup(Player player)
 	{
 		Scanner in = new Scanner(System.in);
@@ -421,20 +471,27 @@ public class Game
 			player.removeGroupCard(puppet); //removing the puppets as well
 	}
 	
+	/**
+	 * a player can choose to give away money or a Special card of theirs
+	 * @param player - the player who wants to give away money or a Special card
+	 * @param players - the list of players playing
+	 */
 	public static void giveMoneyOrSpecials(Player player, ArrayList<Player> players)
 	{
 		Scanner in = new Scanner(System.in);
 		
+		// choose the recipient
 		System.out.println("Choose a player to make the transfer to: ");
 		for(int i = 0; i < players.size(); i++)
 			System.out.println(i+1 + ") " + players.get(i));
 		int recipientIndex  = in.nextInt() - 1;
 		
+		// choose what is being transferred
 		System.out.println("What would you like to transfer?"
 				+ "\n1) Special card"
 				+ "\n2) Money");
 		int transferChoice = in.nextInt();
-		if(transferChoice == 1)
+		if(transferChoice == 1) // transfer a Special card
 		{
 			System.out.println("Choose the Special card you would like to transfer.");
 			for(int i = 0; i < player.specialCards.size(); i++)
@@ -445,7 +502,7 @@ public class Game
 			
 			System.out.println("Transferred " + special + " to " + players.get(recipientIndex) + "!");
 		}
-		else if(transferChoice == 2)
+		else if(transferChoice == 2) // transfer money
 		{
 			System.out.print("Enter the amount you would like to transfer: $");
 			int amount = in.nextInt();
@@ -456,6 +513,10 @@ public class Game
 		}
 	}
 	
+	/**
+	 * uses a Special card of the player's choice
+	 * @param player - the player using the Special card
+	 */
 	public static void useSpecial(Player player)
 	{		
 		if(player.specialCards.size() > 0)
@@ -472,6 +533,11 @@ public class Game
 			System.out.println("You have no Special cards to use...\n");
 	}
 	
+	/**
+	 * a player can choose to skip their turn and instead collect 5 MB
+	 * @param player - the player skipping their turn
+	 * @param bank - gives the player 5 MB
+	 */
 	public static void passTurn(Player player, Bank bank)
 	{
 		System.out.println("You have chosen to pass this turn.");
@@ -479,26 +545,29 @@ public class Game
 		bank.withdraw(player.illuminati);
 	}
 	
+	/**
+	 * MAIN METHOD
+	 */
 	public static void main(String[] args)
 	{
 		ArrayList<Player> players = new ArrayList<Player>();
-		welcome(players);
-		int choice = menu(players);
+		welcome(players); // sets up the players and their usernames
+		int choice = menu(); // Play Game, Settings, or Exit Game
 		
 		while(choice == 1 || choice == 2 || choice == 3)
 		{
-			if(choice == 1)
+			if(choice == 1) // Play Game
 			{
 				playGame(players);
 				break;
 			}
-			else if(choice == 2)
+			else if(choice == 2) // Settings
 				settings(players);
-			else if(choice == 3)
+			else if(choice == 3) // Exit Game
 			{
 				break;
 			}
-			choice = menu(players);
+			choice = menu();
 		}	
 		exit();
 	}
