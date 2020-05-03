@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class UncontrolledGroups
 {
-	public ArrayList<GroupCard> uncontrolled;
+	private ArrayList<GroupCard> uncontrolled;
 	
 	public UncontrolledGroups()
 	{
