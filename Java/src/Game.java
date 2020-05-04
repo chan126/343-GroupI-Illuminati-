@@ -89,7 +89,12 @@ public class Game
 		}
 		else if(choice == 2) // remove a player
 		{
-			System.out.println("\nCurrent Player List: " + Arrays.toString(players.toArray()));
+			System.out.println("\nCurrent Player List: " );
+			//+ Arrays.toString(players.toArray()));
+			for(int i = 0; i < players.size(); i++)
+			{
+				System.out.println(i+1 + ") " + players.get(i));
+			}
 			System.out.print("Enter the player number to remove: ");
 			int indexRemove = in.nextInt();
 			String username = players.get(indexRemove - 1).toString();
@@ -127,13 +132,14 @@ public class Game
 //		from the bank, placing it on the card. 
 		for(Player player : players)
 		{
-			System.out.println("\n" + player + ", please choose your Illuminati group.");
-			int i = 0;
-			for(IlluminatiCard card : illuminati.getCards()) // displays all available Illuminati cards
-			{
-				System.out.println(i+1 + ") " + card);
-				i++;
-			}
+			System.out.println("\n" + player + ", please select a number from 1-" + illuminati.getSize() + " to choose your Illuminati group.");
+//			int i = 0;
+//			for(IlluminatiCard card : illuminati.getCards()) // displays all available Illuminati cards
+//			{
+//				//System.out.println(i+1 + ") " + card);
+//				System.out.println(i+1 + ") ");
+//				i++;
+//			}
 			int choice = in.nextInt();
 			IlluminatiCard myCard = illuminati.remove(choice-1); // removes the chosen Illuminati card from the deck
 			player.setIlluminati(myCard);			     // and sets it as the Player's Illumninati card
@@ -409,7 +415,7 @@ public class Game
 		int requiredRoll = attackingGroup.getAttackPower() - attackeeGroup.getResistance();
 		System.out.println(attackingGroup + "'s attack power: " + attackingGroup.getAttackPower());
 		System.out.println(attackeeGroup + "'s resistance: " + attackeeGroup.getResistance());
-		System.out.println("Required roll: " + requiredRoll);
+		System.out.println("Required roll: " + requiredRoll + " or less");
 		
 		int attackRoll = dice.roll();
 		if(attackRoll == 11 || attackRoll == 12) // rolling 11 or 12 are automatic failures
@@ -463,12 +469,17 @@ public class Game
 		Scanner in = new Scanner(System.in);
 		
 		System.out.println("Choose a group to drop: ");
-		for(int i = 0; i < player.groupCards.size(); i++)
-			System.out.println(i+1 + ") " + player.groupCards.get(i));
-		int index = in.nextInt();
-		GroupCard removed = player.groupCards.remove(index); //remove card
-		for(GroupCard puppet : removed.puppets)
-			player.removeGroupCard(puppet); //removing the puppets as well
+		if(player.groupCards.isEmpty())
+			System.out.println("ERROR: You have no groups to drop!");
+		else
+		{
+			for(int i = 0; i < player.groupCards.size(); i++)
+				System.out.println(i+1 + ") " + player.groupCards.get(i));
+			int index = in.nextInt();
+			GroupCard removed = player.groupCards.remove(index); //remove card
+			for(GroupCard puppet : removed.puppets)
+				player.removeGroupCard(puppet); //removing the puppets as well
+		}
 	}
 	
 	/**
@@ -483,7 +494,10 @@ public class Game
 		// choose the recipient
 		System.out.println("Choose a player to make the transfer to: ");
 		for(int i = 0; i < players.size(); i++)
-			System.out.println(i+1 + ") " + players.get(i));
+		{
+			if(!(players.get(i).toString().equals(player.toString())))
+				System.out.println(i+1 + ") " + players.get(i));
+		}
 		int recipientIndex  = in.nextInt() - 1;
 		
 		// choose what is being transferred
