@@ -12,6 +12,11 @@ public class IlluminatiCards
 		setGroups();
 	}
 	
+	public int getSize()
+	{
+		return cards.size();
+	}
+	
 	public ArrayList<IlluminatiCard> getCards()
 	{
 		return cards;
